@@ -1,0 +1,706 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тихоцвет — цветы и подарки с доставкой в Казани</title>
+    
+    <!-- Шрифты -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        'cream': '#F8F6F1',
+                        'sand': '#E8E1D5',
+                        'espresso': '#3D3128',
+                        'clay': '#B99A82',
+                        'border-c': '#D9D4CA'
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        html { scroll-behavior: smooth; }
+        body { background-color: #F8F6F1; color: #3D3128; overflow-x: hidden; }
+        
+        /* Логика вкладок (SPA) */
+        .page-section { display: none; opacity: 0; transition: opacity 0.4s ease-in-out; }
+        .page-section.active { display: block; opacity: 1; }
+
+        /* Схематичные картинки */
+        .schematic-icon { width: 100%; height: 100%; object-fit: contain; transition: transform 0.5s ease; color: #B99A82; }
+        .group:hover .schematic-icon { transform: scale(1.05); }
+
+        /* Анимация модалки */
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+        
+        /* Аккордеон */
+        .faq-content { max-height: 0; overflow: hidden; transition: max-height 0.3s ease-out; }
+        .faq-item.active .faq-content { max-height: 200px; }
+        .faq-item.active .faq-icon { transform: rotate(45deg); }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #F8F6F1; }
+        ::-webkit-scrollbar-thumb { background: #B99A82; border-radius: 3px; }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+
+    <!-- ШАПКА -->
+    <header class="sticky top-0 z-50 bg-cream/95 backdrop-blur-md border-b border-espresso/10 py-4 px-6 md:px-12 flex justify-between items-center">
+        <a href="#" onclick="navigateTo('home')" class="text-2xl font-serif font-bold tracking-widest uppercase">Тихоцвет</a>
+        
+        <nav class="hidden md:flex gap-8 text-sm uppercase tracking-wider">
+            <button onclick="navigateTo('home')" class="hover:text-clay transition">Главная</button>
+            <button onclick="navigateTo('catalog')" class="hover:text-clay transition">Каталог</button>
+            <a href="#subscription" onclick="navigateTo('home')" class="hover:text-clay transition">Подписка</a>
+            <a href="#office" onclick="navigateTo('home')" class="hover:text-clay transition">Для офиса</a>
+            <a href="#faq" onclick="navigateTo('home')" class="hover:text-clay transition">Вопросы</a>
+        </nav>
+
+        <div class="flex items-center gap-6">
+            <a href="tel:+79956367660" class="hidden md:block text-sm font-medium hover:text-clay transition">+7 995 636-76-60</a>
+            
+            <!-- Кнопка Корзины -->
+            <button onclick="toggleCart()" class="relative flex items-center gap-2 border-2 border-espresso px-5 py-2 rounded-full text-sm font-semibold hover:bg-espresso hover:text-cream transition-all">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+                <span class="hidden sm:inline">Корзина</span>
+                <span id="cart-count" class="absolute -top-2 -right-2 bg-clay text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full opacity-0 transition-opacity">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="flex-grow">
+        <!-- ================= ГЛАВНАЯ ================= -->
+        <section id="page-home" class="page-section active">
+            <!-- Hero -->
+            <div class="py-20 px-6 md:px-12 max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <p class="text-sm uppercase tracking-[0.2em] text-clay mb-4 font-medium">Доставка цветов по Казани</p>
+                    <h1 class="font-serif text-5xl md:text-7xl leading-tight mb-6">
+                        Эстетика в деталях: <br>цветы для вашего дома
+                    </h1>
+                    <p class="text-lg text-espresso/70 mb-4">Выбрали за минуту — привезли ровно то, что на фото.</p>
+                    <p class="text-sm text-espresso/60 mb-8">Готовые комплекты · 60–90 минут по Казани · Бесплатно в ЖК «Аквамарин».</p>
+                    <button onclick="navigateTo('catalog')" class="inline-block px-10 py-4 bg-espresso text-cream rounded-full text-sm uppercase tracking-widest hover:bg-clay transition-colors">
+                        Открыть меню
+                    </button>
+                </div>
+                <div class="h-[500px] flex items-center justify-center bg-sand/30 rounded-sm">
+                    <svg viewBox="0 0 400 400" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M200 350 V 200 M200 250 Q 150 230 140 180 M200 250 Q 250 230 260 180" />
+                        <path d="M140 180 C 120 160 120 120 140 100 C 160 120 160 160 140 180 Z" />
+                        <path d="M260 180 C 240 160 240 120 260 100 C 280 120 280 160 260 180 Z" />
+                        <path d="M200 200 C 180 180 180 140 200 120 C 220 140 220 180 200 200 Z" />
+                        <path d="M150 350 L 250 350 L 230 280 L 170 280 Z" />
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Как это работает -->
+            <div class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-6 md:px-12 text-center">
+                    <h2 class="font-serif text-4xl mb-4">Как это работает</h2>
+                    <p class="text-espresso/60 mb-16">Три шага — и букет в пути</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
+                        <div>
+                            <span class="block text-3xl font-serif text-clay mb-4">1</span>
+                            <h3 class="text-xl font-medium mb-2">Выбери номер</h3>
+                            <p class="text-sm text-espresso/60">Всё в меню — в наличии, выбирай по номеру</p>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-serif text-clay mb-4">2</span>
+                            <h3 class="text-xl font-medium mb-2">Оплати онлайн</h3>
+                            <p class="text-sm text-espresso/60">Картой или по СБП, чек придёт автоматически</p>
+                        </div>
+                        <div>
+                            <span class="block text-3xl font-serif text-clay mb-4">3</span>
+                            <h3 class="text-xl font-medium mb-2">Получи фото перед выездом</h3>
+                            <p class="text-sm text-espresso/60">Соберём и пришлём фото — привезём ровно то, что выбрал</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Меню (Превью) -->
+            <div class="py-20 px-6 md:px-12 max-w-7xl mx-auto">
+                <div class="flex justify-between items-end mb-12 border-b border-espresso/10 pb-4">
+                    <h2 class="font-serif text-4xl">Меню</h2>
+                    <button onclick="navigateTo('catalog')" class="text-sm text-espresso/60 hover:text-espresso transition">Смотреть весь каталог →</button>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="group cursor-pointer" onclick="navigateTo('catalog')">
+                        <div class="relative h-[350px] bg-sand/30 mb-6 flex items-center justify-center overflow-hidden">
+                            <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M80 280 L120 280 L110 200 L90 200 Z" /><path d="M100 200 Q 90 150 70 120 M100 200 Q 110 150 130 120" /><circle cx="70" cy="110" r="10"/><circle cx="130" cy="110" r="10"/></svg>
+                        </div>
+                        <h3 class="text-xl font-medium mb-2">Букет «Тихий вечер»</h3>
+                        <p class="text-sm text-espresso/60 mb-2">Пионы, гортензия, эвкалипт</p>
+                        <p class="font-medium">2 800 ₽</p>
+                    </div>
+                    <div class="group cursor-pointer" onclick="navigateTo('catalog')">
+                        <div class="relative h-[350px] bg-sand/30 mb-6 flex items-center justify-center overflow-hidden">
+                            <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M60 180 L140 180 L150 280 L50 280 Z" /><path d="M100 180 L100 280" /><circle cx="100" cy="140" r="15"/></svg>
+                        </div>
+                        <h3 class="text-xl font-medium mb-2">Комплект «Уют»</h3>
+                        <p class="text-sm text-espresso/60 mb-2">Букет + керамическая ваза</p>
+                        <p class="font-medium">3 500 ₽</p>
+                    </div>
+                    <div class="group cursor-pointer" onclick="navigateTo('catalog')">
+                        <div class="relative h-[350px] bg-sand/30 mb-6 flex items-center justify-center overflow-hidden">
+                            <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M60 250 L140 250 L130 180 L70 180 Z" /><path d="M100 180 Q 80 130 60 150 Q 80 160 100 180" /><circle cx="100" cy="100" r="15" /></svg>
+                        </div>
+                        <h3 class="text-xl font-medium mb-2">Набор в шоппере</h3>
+                        <p class="text-sm text-espresso/60 mb-2">Срезка, кашпо, свеча</p>
+                        <p class="font-medium">4 200 ₽</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Блок "Спроси флориста" (аналог Точкина) -->
+            <div class="py-16 bg-sand/20">
+                <div class="max-w-7xl mx-auto px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+                    <div class="h-[400px] flex items-center justify-center">
+                        <svg viewBox="0 0 300 300" class="schematic-icon" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="150" cy="100" r="40"/><path d="M80 280 Q 150 180 220 280"/><rect x="120" y="150" width="60" height="80" rx="10"/><path d="M100 120 L120 120 M180 120 L200 120" /></svg>
+                    </div>
+                    <div>
+                        <p class="text-clay uppercase tracking-[0.2em] text-xs mb-4 font-medium">Не знаешь, какой номер взять?</p>
+                        <h2 class="font-serif text-4xl md:text-5xl mb-6">Спроси флориста</h2>
+                        <p class="text-espresso/70 text-base mb-8 leading-relaxed">Наши флористы знают меню наизусть. Напишите, кому дарим и на какую сумму, — подскажем идеальный вариант за минуту.</p>
+                        <div class="flex gap-4">
+                            <a href="https://t.me/tihocvet" target="_blank" class="px-6 py-3 border border-espresso rounded-full text-sm hover:bg-espresso hover:text-cream transition">Спросить в Telegram</a>
+                            <a href="https://wa.me/79956367660" target="_blank" class="px-6 py-3 border border-espresso rounded-full text-sm hover:bg-espresso hover:text-cream transition">Написать в WhatsApp</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Подписка -->
+            <div id="subscription" class="py-20 bg-sand/30 px-6 md:px-12">
+                <div class="max-w-4xl mx-auto text-center">
+                    <h2 class="font-serif text-4xl mb-4">Самое то</h2>
+                    <p class="text-espresso/60 mb-12">Цветы себе — букеты без упаковки от 1 690 ₽</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-left">
+                        <div class="bg-white p-8 border border-espresso/10 shadow-sm flex flex-col">
+                            <h3 class="text-2xl font-serif mb-2">Раз в неделю</h3>
+                            <p class="text-sm text-espresso/50 mb-6">в месяц</p>
+                            <p class="text-3xl font-light mb-6">6 790 ₽</p>
+                            <ul class="text-sm text-espresso/70 mb-8 space-y-2 flex-grow">
+                                <li>— 4 букета в месяц</li>
+                                <li>— ≈1 700 ₽ за букет</li>
+                                <li>— Без упаковки — сразу в вазу</li>
+                            </ul>
+                            <a href="https://t.me/tihocvet" class="block text-center w-full py-3 bg-espresso text-cream rounded-full hover:bg-clay transition">Узнать про подписку</a>
+                        </div>
+                        <div class="bg-white p-8 border border-espresso/10 shadow-sm flex flex-col">
+                            <h3 class="text-2xl font-serif mb-2">Раз в две недели</h3>
+                            <p class="text-sm text-espresso/50 mb-6">в месяц</p>
+                            <p class="text-3xl font-light mb-6">3 590 ₽</p>
+                            <ul class="text-sm text-espresso/70 mb-8 space-y-2 flex-grow">
+                                <li>— 2 букета в месяц</li>
+                                <li>— ≈1 800 ₽ за букет</li>
+                                <li>— Без упаковки — сразу в вазу</li>
+                            </ul>
+                            <a href="https://t.me/tihocvet" class="block text-center w-full py-3 bg-espresso text-cream rounded-full hover:bg-clay transition">Узнать про подписку</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Для офиса -->
+            <div id="office" class="py-20 max-w-7xl mx-auto px-6 md:px-12">
+                <h2 class="font-serif text-4xl text-center mb-12">Для офиса</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="bg-cream p-8 border border-espresso/5">
+                        <h3 class="text-xl font-serif mb-3">Ресепшн</h3>
+                        <p class="text-sm text-espresso/60 mb-6">Композиция в вазе с заменой раз в неделю — от 13 960 ₽ в месяц</p>
+                        <a href="https://t.me/tihocvet" class="text-sm font-medium border-b border-espresso pb-1 hover:text-clay hover:border-clay transition">Обсудить для офиса</a>
+                    </div>
+                    <div class="bg-cream p-8 border border-espresso/5">
+                        <h3 class="text-xl font-serif mb-3">Букеты коллегам</h3>
+                        <p class="text-sm text-espresso/60 mb-6">К праздникам и дням рождения сотрудников</p>
+                        <a href="https://t.me/tihocvet" class="text-sm font-medium border-b border-espresso pb-1 hover:text-clay hover:border-clay transition">Обсудить для офиса</a>
+                    </div>
+                    <div class="bg-cream p-8 border border-espresso/5">
+                        <h3 class="text-xl font-serif mb-3">Оплата по счёту</h3>
+                        <p class="text-sm text-espresso/60 mb-6">Безналичный расчёт раз в месяц для юрлиц</p>
+                        <a href="https://t.me/tihocvet" class="text-sm font-medium border-b border-espresso pb-1 hover:text-clay hover:border-clay transition">Обсудить для офиса</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Доставка и оплата -->
+            <div class="py-20 bg-white">
+                <div class="max-w-7xl mx-auto px-6 md:px-12">
+                    <h2 class="font-serif text-4xl text-center mb-16">Доставка и оплата</h2>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                        <div><h3 class="text-lg font-medium mb-2">По Казани</h3><p class="text-sm text-espresso/60">Бесплатно в ЖК «Аквамарин»</p></div>
+                        <div><h3 class="text-lg font-medium mb-2">Пригород</h3><p class="text-sm text-espresso/60">Доплата по зоне</p></div>
+                        <div><h3 class="text-lg font-medium mb-2">60–90 минут</h3><p class="text-sm text-espresso/60">Или к выбранному времени</p></div>
+                        <div><h3 class="text-lg font-medium mb-2">Оплата</h3><p class="text-sm text-espresso/60">Картой или по СБП, чек авто</p></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Гарантия -->
+            <div class="py-24 bg-espresso text-cream text-center px-6">
+                <div class="max-w-2xl mx-auto">
+                    <h2 class="font-serif text-4xl md:text-5xl mb-6">Привозим ровно то, что выбрали</h2>
+                    <p class="text-lg text-cream/70 mb-4">Перед выездом пришлём фото букета. Если он не совпал с карточкой — пересоберём или вернём деньги.</p>
+                    <p class="text-sm text-cream/50">Собираем строго по карточке. Только свежие цветы.</p>
+                </div>
+            </div>
+
+            <!-- FAQ -->
+            <div id="faq" class="py-20 max-w-3xl mx-auto px-6">
+                <h2 class="font-serif text-4xl text-center mb-12">Вопросы</h2>
+                <div class="space-y-4">
+                    <div class="faq-item border-b border-espresso/10 pb-4">
+                        <div class="flex justify-between items-center cursor-pointer faq-btn">
+                            <span class="text-base font-medium">Можно поменять цветы в букете?</span>
+                            <svg class="w-4 h-4 faq-icon transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        </div>
+                        <div class="faq-content"><p class="text-sm text-espresso/70 pt-2">Нет, собираем строго по карточке. Поэтому и привозим ровно то, что выбрали.</p></div>
+                    </div>
+                    <div class="faq-item border-b border-espresso/10 pb-4">
+                        <div class="flex justify-between items-center cursor-pointer faq-btn">
+                            <span class="text-base font-medium">Можно добавить открытку?</span>
+                            <svg class="w-4 h-4 faq-icon transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        </div>
+                        <div class="faq-content"><p class="text-sm text-espresso/70 pt-2">Да, дизайнерская открытка — 150 ₽. Текст напишете после оплаты.</p></div>
+                    </div>
+                    <div class="faq-item border-b border-espresso/10 pb-4">
+                        <div class="flex justify-between items-center cursor-pointer faq-btn">
+                            <span class="text-base font-medium">Можно заказать заранее?</span>
+                            <svg class="w-4 h-4 faq-icon transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" /></svg>
+                        </div>
+                        <div class="faq-content"><p class="text-sm text-espresso/70 pt-2">Да, на любую дату. Дату и время выберете после оплаты.</p></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= КАТАЛОГ ================= -->
+        <section id="page-catalog" class="page-section py-12 px-6 md:px-12 max-w-7xl mx-auto">
+            <div class="mb-12">
+                <p class="text-sm uppercase tracking-[0.2em] text-clay mb-2 font-medium">Цветочное меню Казани</p>
+                <h1 class="font-serif text-4xl md:text-5xl mb-4">Каталог цветов</h1>
+                <p class="text-base text-espresso/60 max-w-2xl">Выбирайте готовые композиции для дома и в подарок. Бесплатная доставка в ЖК «Аквамарин».</p>
+            </div>
+
+            <div class="flex gap-3 overflow-x-auto pb-6 mb-6">
+                <button class="px-5 py-2 rounded-full bg-espresso text-cream text-sm font-medium whitespace-nowrap">Все букеты</button>
+                <button class="px-5 py-2 rounded-full border border-espresso/20 hover:border-espresso text-sm font-medium whitespace-nowrap transition-colors">Цветы домой</button>
+                <button class="px-5 py-2 rounded-full border border-espresso/20 hover:border-espresso text-sm font-medium whitespace-nowrap transition-colors">Авторские</button>
+                <button class="px-5 py-2 rounded-full border border-espresso/20 hover:border-espresso text-sm font-medium whitespace-nowrap transition-colors">В коробках</button>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Товар 1 -->
+                <div class="group">
+                    <div class="relative h-[350px] bg-sand/30 mb-4 flex items-center justify-center overflow-hidden">
+                        <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M80 280 L120 280 L110 200 L90 200 Z" /><path d="M100 200 Q 90 150 70 120 M100 200 Q 110 150 130 120" /><circle cx="70" cy="110" r="10"/><circle cx="130" cy="110" r="10"/></svg>
+                        <div class="absolute top-3 left-3 bg-white px-2 py-1 text-xs font-medium rounded-sm">Хит</div>
+                    </div>
+                    <h3 class="font-serif text-xl font-medium mb-1">Нежный рассвет</h3>
+                    <p class="text-sm text-espresso/60 mb-3">Пионы, эустома, зелень</p>
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">2 800 ₽</span>
+                        <button onclick="addToCart(1, 'Нежный рассвет', 2800, 'svg1')" class="w-10 h-10 bg-espresso text-cream rounded-full flex items-center justify-center hover:bg-clay transition">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Товар 2 -->
+                <div class="group">
+                    <div class="relative h-[350px] bg-sand/30 mb-4 flex items-center justify-center overflow-hidden">
+                        <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M60 180 L140 180 L150 280 L50 280 Z" /><path d="M100 180 L100 280" /><circle cx="100" cy="140" r="15"/></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-medium mb-1">Тихий вечер</h3>
+                    <p class="text-sm text-espresso/60 mb-3">Розы, сухоцветы, кашпо</p>
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">3 200 ₽</span>
+                        <button onclick="addToCart(2, 'Тихий вечер', 3200, 'svg2')" class="w-10 h-10 bg-espresso text-cream rounded-full flex items-center justify-center hover:bg-clay transition">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Товар 3 -->
+                <div class="group">
+                    <div class="relative h-[350px] bg-sand/30 mb-4 flex items-center justify-center overflow-hidden">
+                        <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M85 280 L115 280 L120 160 L80 160 Z" /><path d="M100 160 Q 80 100 50 80 M100 160 Q 110 90 140 70" /></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-medium mb-1">Для тебя</h3>
+                    <p class="text-sm text-espresso/60 mb-3">Кремовые розы, эвкалипт</p>
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">2 400 ₽</span>
+                        <button onclick="addToCart(3, 'Для тебя', 2400, 'svg3')" class="w-10 h-10 bg-espresso text-cream rounded-full flex items-center justify-center hover:bg-clay transition">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Товар 4 -->
+                <div class="group">
+                    <div class="relative h-[350px] bg-sand/30 mb-4 flex items-center justify-center overflow-hidden">
+                        <svg viewBox="0 0 200 300" class="schematic-icon p-8" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M60 250 L140 250 L130 180 L70 180 Z" /><path d="M100 180 Q 80 130 60 150 Q 80 160 100 180" /><circle cx="100" cy="100" r="15" /></svg>
+                    </div>
+                    <h3 class="font-serif text-xl font-medium mb-1">Уют в доме</h3>
+                    <p class="text-sm text-espresso/60 mb-3">Гортензия, гвоздика</p>
+                    <div class="flex justify-between items-center">
+                        <span class="font-semibold text-lg">1 900 ₽</span>
+                        <button onclick="addToCart(4, 'Уют в доме', 1900, 'svg4')" class="w-10 h-10 bg-espresso text-cream rounded-full flex items-center justify-center hover:bg-clay transition">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ОФОРМЛЕНИЕ ЗАКАЗА ================= -->
+        <section id="page-checkout" class="page-section py-12 px-6 max-w-6xl mx-auto">
+            <button onclick="navigateTo('catalog')" class="text-sm text-espresso/60 hover:text-espresso mb-8 flex items-center gap-2">
+                ← Вернуться в каталог
+            </button>
+            
+            <h1 class="font-serif text-3xl md:text-4xl mb-10">Оформление заказа</h1>
+
+            <div class="flex flex-col lg:flex-row gap-12">
+                <!-- Форма -->
+                <div class="w-full lg:w-2/3 space-y-8">
+                    <div class="bg-white p-6 md:p-8 rounded-sm shadow-sm border border-border-c/50">
+                        <h2 class="text-lg font-medium mb-4">Данные получателя</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <input type="text" id="chk-name" placeholder="Имя и фамилия" class="w-full border border-border-c rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-espresso">
+                            <input type="tel" id="chk-phone" placeholder="Телефон" class="w-full border border-border-c rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-espresso">
+                            <input type="email" id="chk-email" placeholder="Email (для чека)" class="w-full border border-border-c rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-espresso md:col-span-2">
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-6 md:p-8 rounded-sm shadow-sm border border-border-c/50">
+                        <h2 class="text-lg font-medium mb-4">Способ доставки</h2>
+                        <div class="space-y-3 mb-6">
+                            <label class="flex items-start gap-3 p-4 border border-border-c rounded-sm cursor-pointer hover:border-espresso transition">
+                                <input type="radio" name="delivery" value="300" onchange="updateCheckoutTotals()" class="mt-1 accent-espresso" checked>
+                                <div>
+                                    <p class="font-medium text-sm">Курьер по Казани</p>
+                                    <p class="text-xs text-espresso/60 mt-1">60–90 минут</p>
+                                    <p class="text-sm font-semibold mt-2 text-clay">300 ₽</p>
+                                </div>
+                            </label>
+                            <label class="flex items-start gap-3 p-4 border border-border-c rounded-sm cursor-pointer hover:border-espresso transition">
+                                <input type="radio" name="delivery" value="0" onchange="updateCheckoutTotals()" class="mt-1 accent-espresso">
+                                <div>
+                                    <p class="font-medium text-sm">Самовывоз</p>
+                                    <p class="text-xs text-espresso/60 mt-1">г. Казань, ул. Ярдем, 23</p>
+                                    <p class="text-sm font-semibold mt-2 text-clay">Бесплатно</p>
+                                </div>
+                            </label>
+                        </div>
+                        <input type="text" id="chk-address" placeholder="Адрес доставки (улица, дом, квартира)" class="w-full border border-border-c rounded-sm px-4 py-3 text-sm focus:outline-none focus:border-espresso">
+                    </div>
+
+                    <div class="bg-white p-6 md:p-8 rounded-sm shadow-sm border border-border-c/50">
+                        <h2 class="text-lg font-medium mb-4">Способ оплаты</h2>
+                        <div class="space-y-3">
+                            <label class="flex items-center gap-3 p-4 border border-border-c rounded-sm cursor-pointer hover:border-espresso transition">
+                                <input type="radio" name="payment" class="accent-espresso" checked>
+                                <span class="font-medium text-sm">Онлайн-оплата картой</span>
+                            </label>
+                            <label class="flex items-center gap-3 p-4 border border-border-c rounded-sm cursor-pointer hover:border-espresso transition">
+                                <input type="radio" name="payment" class="accent-espresso">
+                                <span class="font-medium text-sm">При получении</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Чек -->
+                <div class="w-full lg:w-1/3">
+                    <div class="bg-white p-6 md:p-8 rounded-sm shadow-sm border border-border-c/50 sticky top-24">
+                        <h2 class="text-lg font-medium mb-6">Ваш заказ</h2>
+                        
+                        <div id="checkout-items" class="space-y-4 mb-6 border-b border-border-c pb-6">
+                            <!-- Рендерится через JS -->
+                        </div>
+
+                        <div class="mb-6">
+                            <div class="flex gap-2">
+                                <input type="text" placeholder="Промокод" class="w-full border border-border-c rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-espresso transition">
+                                <button class="px-4 py-2 bg-sand text-espresso text-sm rounded-sm hover:bg-border-c transition">Применить</button>
+                            </div>
+                        </div>
+
+                        <div class="space-y-3 text-sm mb-6 border-b border-border-c pb-6">
+                            <div class="flex justify-between text-espresso/60">
+                                <span>Товары</span>
+                                <span id="checkout-subtotal">0 ₽</span>
+                            </div>
+                            <div class="flex justify-between text-espresso/60">
+                                <span>Доставка</span>
+                                <span id="checkout-delivery">300 ₽</span>
+                            </div>
+                        </div>
+
+                        <div class="flex justify-between items-center mb-8">
+                            <span class="font-medium">Итого:</span>
+                            <span id="checkout-total" class="font-serif text-2xl font-bold">0 ₽</span>
+                        </div>
+
+                        <button onclick="submitOrder()" class="w-full bg-espresso text-cream py-4 rounded-full text-sm font-medium hover:bg-clay transition-colors duration-300">
+                            Оформить заказ
+                        </button>
+
+                        <p class="text-[11px] text-espresso/50 text-center mt-4 leading-tight">
+                            Нажимая кнопку, вы соглашаетесь с <a href="#" class="underline">политикой конфиденциальности</a> и <a href="#" class="underline">публичной офертой</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- ПОДВАЛ -->
+    <footer id="contacts" class="bg-espresso text-cream py-12 px-6 md:px-12 mt-auto">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <p class="font-serif font-bold text-xl mb-2">Тихоцвет</p>
+                <p class="text-sm text-cream/70">Казань · каждый день 09:00–21:00</p>
+                <a href="tel:+79956367660" class="block text-sm text-cream/70 hover:text-white mt-2">+7 995 636-76-60</a>
+            </div>
+            <div>
+                <p class="text-sm font-medium mb-2">Мы на связи</p>
+                <a href="#" class="block text-sm text-cream/70 hover:text-white">Telegram</a>
+                <a href="#" class="block text-sm text-cream/70 hover:text-white mt-1">ВКонтакте</a>
+            </div>
+            <div>
+                <p class="text-sm font-medium mb-2">Информация</p>
+                <a href="#" class="block text-sm text-cream/70 hover:text-white">Политика обработки данных</a>
+                <a href="#" class="block text-sm text-cream/70 hover:text-white mt-1">Публичная оферта</a>
+            </div>
+            <div>
+                <p class="text-xs text-cream/40">ИП Толкина К.С. · ИНН 164608618007<br>© 2026 Тихоцвет</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- КОРЗИНА (Выезжающая панель) -->
+    <div id="cart-modal" class="fixed inset-0 z-[100] flex justify-end hidden">
+        <div class="absolute inset-0 bg-espresso/50 backdrop-blur-sm" onclick="toggleCart()"></div>
+        <div class="relative bg-cream w-full max-w-md h-full shadow-2xl p-6 overflow-y-auto flex flex-col animate-[slideIn_0.3s_ease-out]">
+            <div class="flex justify-between items-center mb-6 border-b border-espresso/10 pb-4">
+                <h2 class="font-serif text-2xl">Корзина</h2>
+                <button onclick="toggleCart()" class="text-2xl hover:text-clay">✕</button>
+            </div>
+            
+            <div id="cart-items" class="flex-grow space-y-4">
+                <!-- Рендерится через JS -->
+            </div>
+
+            <div class="border-t border-espresso/10 pt-4 mt-4">
+                <div class="flex justify-between items-center text-lg font-medium mb-4">
+                    <span>Итого:</span>
+                    <span id="cart-total">0 ₽</span>
+                </div>
+                <button onclick="goToCheckout()" class="w-full bg-espresso text-cream py-3 rounded-full text-sm font-medium hover:bg-clay transition">Перейти к оформлению</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- УВЕДОМЛЕНИЕ -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 bg-espresso text-cream px-6 py-3 rounded-full text-sm font-medium opacity-0 pointer-events-none transition-opacity duration-300 z-[110] shadow-lg">
+        Товар добавлен в корзину
+    </div>
+
+    <!-- СКРИПТЫ -->
+    <script>
+        // Схематичные картинки для корзины
+        const svgIcons = {
+            'svg1': `<svg viewBox="0 0 200 300" class="w-10 h-10 text-clay" fill="none" stroke="currentColor" stroke-width="4"><path d="M80 280 L120 280 L110 200 L90 200 Z" /><path d="M100 200 Q 90 150 70 120 M100 200 Q 110 150 130 120" /><circle cx="70" cy="110" r="10"/><circle cx="130" cy="110" r="10"/></svg>`,
+            'svg2': `<svg viewBox="0 0 200 300" class="w-10 h-10 text-clay" fill="none" stroke="currentColor" stroke-width="4"><path d="M60 180 L140 180 L150 280 L50 280 Z" /><path d="M100 180 L100 280" /><circle cx="100" cy="140" r="15"/></svg>`,
+            'svg3': `<svg viewBox="0 0 200 300" class="w-10 h-10 text-clay" fill="none" stroke="currentColor" stroke-width="4"><path d="M85 280 L115 280 L120 160 L80 160 Z" /><path d="M100 160 Q 80 100 50 80 M100 160 Q 110 90 140 70" /></svg>`,
+            'svg4': `<svg viewBox="0 0 200 300" class="w-10 h-10 text-clay" fill="none" stroke="currentColor" stroke-width="4"><path d="M60 250 L140 250 L130 180 L70 180 Z" /><path d="M100 180 Q 80 130 60 150 Q 80 160 100 180" /><circle cx="100" cy="100" r="15" /></svg>`
+        };
+
+        // --- 1. НАВИГАЦИЯ ---
+        function navigateTo(pageId) {
+            document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+            document.getElementById(`page-${pageId}`).classList.add('active');
+            window.scrollTo(0, 0);
+            if(pageId === 'checkout') renderCheckoutPage();
+        }
+
+        // --- 2. ЛОГИКА КОРЗИНЫ ---
+        let cart = [];
+
+        function addToCart(id, name, price, svgId) {
+            const existingItem = cart.find(item => item.id === id);
+            if (existingItem) {
+                existingItem.quantity += 1;
+            } else {
+                cart.push({ id, name, price, svgId, quantity: 1 });
+            }
+            updateCartUI();
+            showToast(`«${name}» добавлен в корзину`);
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            const cartItems = document.getElementById('cart-items');
+            const cartCount = document.getElementById('cart-count');
+            const cartTotal = document.getElementById('cart-total');
+
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            cartCount.textContent = totalItems;
+            cartCount.style.opacity = totalItems > 0 ? '1' : '0';
+
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="text-espresso/60 text-sm">Ваша корзина пуста</p>';
+                cartTotal.textContent = '0 ₽';
+                return;
+            }
+
+            let total = 0;
+            cartItems.innerHTML = '';
+            cart.forEach(item => {
+                total += item.price * item.quantity;
+                cartItems.innerHTML += `
+                    <div class="flex items-center gap-4 bg-white p-2 border border-border-c/30 rounded-sm">
+                        <div class="w-12 h-12 flex items-center justify-center bg-sand/30 rounded-sm">
+                            ${svgIcons[item.svgId]}
+                        </div>
+                        <div class="flex-grow">
+                            <h4 class="font-medium text-sm">${item.name}</h4>
+                            <p class="text-xs text-espresso/60">${item.quantity} шт.</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="font-medium text-sm">${item.price * item.quantity} ₽</p>
+                            <button onclick="removeFromCart(${item.id})" class="text-xs text-espresso/40 hover:text-espresso mt-1">Удалить</button>
+                        </div>
+                    </div>
+                `;
+            });
+            cartTotal.textContent = `${total} ₽`;
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.classList.toggle('hidden');
+            document.body.style.overflow = modal.classList.contains('hidden') ? 'auto' : 'hidden';
+        }
+
+        function goToCheckout() {
+            if(cart.length === 0) {
+                showToast('Корзина пуста!');
+                return;
+            }
+            toggleCart();
+            navigateTo('checkout');
+        }
+
+        // --- 3. ОФОРМЛЕНИЕ ЗАКАЗА ---
+        function renderCheckoutPage() {
+            const itemsContainer = document.getElementById('checkout-items');
+            itemsContainer.innerHTML = '';
+            
+            if (cart.length === 0) {
+                itemsContainer.innerHTML = '<p class="text-sm text-espresso/60">Корзина пуста</p>';
+                updateCheckoutTotals();
+                return;
+            }
+
+            cart.forEach(item => {
+                itemsContainer.innerHTML += `
+                    <div class="flex justify-between items-center text-sm">
+                        <div class="flex gap-3 items-center">
+                            <div class="w-10 h-10 flex items-center justify-center bg-sand/30 rounded-sm">
+                                ${svgIcons[item.svgId]}
+                            </div>
+                            <span>${item.name} <span class="text-espresso/50">× ${item.quantity}</span></span>
+                        </div>
+                        <span class="font-medium">${item.price * item.quantity} ₽</span>
+                    </div>
+                `;
+            });
+            updateCheckoutTotals();
+        }
+
+        function updateCheckoutTotals() {
+            const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const deliveryRadio = document.querySelector('input[name="delivery"]:checked');
+            const deliveryCost = deliveryRadio ? parseInt(deliveryRadio.value) : 300;
+
+            document.getElementById('checkout-subtotal').textContent = `${subtotal} ₽`;
+            document.getElementById('checkout-delivery').textContent = deliveryCost === 0 ? 'Бесплатно' : `${deliveryCost} ₽`;
+            document.getElementById('checkout-total').textContent = `${subtotal + deliveryCost} ₽`;
+        }
+
+        function submitOrder() {
+            if (cart.length === 0) {
+                showToast('Добавьте товары в корзину!');
+                return;
+            }
+            
+            const name = document.getElementById('chk-name').value;
+            const phone = document.getElementById('chk-phone').value;
+            
+            if(!name || !phone) {
+                showToast('Заполните имя и телефон!');
+                return;
+            }
+
+            const btn = document.querySelector('#page-checkout button[onclick="submitOrder()"]');
+            const originalText = btn.textContent;
+            btn.textContent = 'Оформляем...';
+            
+            setTimeout(() => {
+                cart = [];
+                updateCartUI();
+                document.getElementById('chk-name').value = '';
+                document.getElementById('chk-phone').value = '';
+                document.getElementById('chk-address').value = '';
+                
+                btn.textContent = originalText;
+                showToast('Заказ успешно оформлен! Мы свяжемся с вами.');
+                navigateTo('home');
+            }, 1500);
+        }
+
+        // --- 4. ВСПОМОГАТЕЛЬНЫЕ ---
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.remove('opacity-0');
+            setTimeout(() => toast.classList.add('opacity-0'), 2500);
+        }
+
+        document.querySelectorAll('.faq-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                btn.parentElement.classList.toggle('active');
+            });
+        });
+
+        // Инициализация
+        updateCartUI();
+    </script>
+</body>
+</html>
